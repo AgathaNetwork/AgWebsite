@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>限时活动 | Agatha纯净生存</title>
+  </head>
+  <body onload="Verify();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/accounts/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+OpenID
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>正在加载</h2></div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    <div class="shadow-sm row">
+        <div class="col-12 col-md" style="margin-bottom:1rem">
+            
+        <a href="/accounts/" class="text-decoration-none">返回</a>
+            <div class="list-group"  style="margin-top:1rem">
+            <a class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Agatha五周年大礼包</h5>
+            </div>
+                            <ul class="list-group list-group-flush">
+  <li class="list-group-item"><object><a class="text-black-50" style="margin-right:1rem">活动形式</a></object>大礼包</li>
+  <li class="list-group-item"><object><a class="text-black-50" style="margin-right:1rem">活动时间</a></object>（预计）2025年6月26日</li>
+  <li class="list-group-item"><object><a class="text-black-50" style="margin-right:1rem">截止时间</a></object>（预计）2025年6月15日</li></ul>
+    <small>地图册（奋斗村、米诺村、龙巢村）*1本</small><br>
+    <small>五周年丝印卡*1张</small><br>
+    <small>Agatha运维同款记录本（格式改编，A5，20孔活页）*1本</small><br>
+    <small>其他（如有）</small><br>
+    <br>请点击OpenID账号信息功能查看预留的地址，如果没有预留地址将无法发货。请按页面提示提交地址。<br>
+  <br>
+  <small id="JoinedText" style="display:none">您已参与</small><br><button type="submit" class="btn btn-primary" id="JoinButton" style="display:none;margin-left:1rem" onclick="ActJoin();">参与</button>
+                    
+                </a>
+
+                
+                </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/verify_activity.js"></script>
+    <script src="/js/activityutils.js"></script>
+  </body>
+</html>
