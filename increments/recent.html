@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bs_for_recent.css" crossorigin="anonymous">
+    <title>切片备份查询 | Agatha纯净生存</title>
+</head>
+<body>
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                切片备份查询
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" id="IndexContainer" style="margin-top: 1rem;">
+        <h3>备份列表</h3>
+        <!-- 修改此处：添加 accordion 类和 id -->
+        <div class="accordion" id="backupCards"></div>
+        
+    </div>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/bs_for_recent.js"></script>
+
+    <script>
+        // 获取 API 数据并生成折叠卡片
+        async function fetchAndDisplayBackups() {
+            const apiUrl = 'https://api-openid.agatha.org.cn/backup/listBackups';
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                const backupCardsDiv = document.getElementById('backupCards');
+                backupCardsDiv.innerHTML = ''; // 清空旧内容
+
+                data.data.forEach((backup, index) => {
+                    const timestamp = parseInt(backup.timestamp, 10);
+                    const date = new Date(timestamp * 1000); // 转换为日期格式
+                    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+                    
+                    const files = backup.files.split('|'); // 分割文件列表
+
+                    // 创建折叠卡片
+                    const cardHtml = `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading${index}">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
+                                    ${formattedDate}
+                                </button>
+                            </h2>
+                            <div id="collapse${index}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#backupCards">
+                                <div class="accordion-body">
+                                    <ul>
+                                        ${files.map(file => `<li>${file}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    backupCardsDiv.innerHTML += cardHtml;
+                    // 手动初始化 Collapse
+                    const collapseElement = document.getElementById(`collapse${index}`);
+                    new bootstrap.Collapse(collapseElement, {
+                        toggle: false
+                    });
+                });
+            } catch (error) {
+                console.error('Error fetching backups:', error);
+                document.getElementById('backupCards').innerHTML = '<p>无法加载备份数据，请稍后再试。</p>';
+            }
+        }
+
+        // 初始化页面时调用函数
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndDisplayBackups();
+        });
+    </script>
+</body>
+</html>

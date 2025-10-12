@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <title>切片备份查询 | Agatha纯净生存</title>
+</head>
+<body>
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+            切片备份查询
+        </a>
+    </div>
+</nav>
+
+<div class="container" style="margin-top:2rem" id="SearchContainer">
+    <div class="row">
+        <div class="col">
+            <form id="filePathForm">
+                <div class="form-row">
+                    <div class="col-md-12 mb-3">
+                        <label for="filePathInput">请输入文件路径：</label>
+                        <input type="text" class="form-control" id="filePathInput"
+                               placeholder="文件在一个Minecraft服务器中的路径" required>
+                        <small class="form-text text-muted">
+                            路径格式参考：<br>
+                            - /world/data/map_1369.dat<br>
+                            - /world/region/r.0.0.mca<br>
+                            - /world/stats/11451418-1981-0666-6666666.json<br>
+                            - /world/playerdata/ffffff-ffff-ffff-fffffuck.dat<br>
+                            - /world_nether/DIM-1/region/r.1.1.mca<br>
+                            - /world_the_end/DIM1/region/r.2.2.mca<br>
+                        </small>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="SubmitBackups();">查询</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top:2rem" id="IndexContainer">
+    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+        <h5>查询结果：</h5>
+        <div id="resultArea" class="p-3 border rounded" style="min-height: 100px;">
+            请先输入文件路径进行查询
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    function SubmitBackups() {
+        const filePath = document.getElementById('filePathInput').value;
+        const resultArea = document.getElementById('resultArea');
+
+        if (!filePath) {
+            alert('请输入有效的文件路径！');
+            return;
+        }
+
+        // 显示加载状态
+        resultArea.innerHTML = `
+            <div class="d-flex align-items-center">
+              <strong>正在查询...</strong>
+              <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+            </div>
+        `;
+
+        // 创建 XMLHttpRequest 对象
+        var xhr = new XMLHttpRequest();
+
+        // 配置请求
+        xhr.open('POST', 'https://api-openid.agatha.org.cn/backup/listFile', true);
+        //xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");//设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
+
+
+        // 发送请求
+        xhr.send('file_path=' + filePath);
+        
+        // 处理响应
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) { // 请求完成
+                if (xhr.status === 200) { // 成功响应
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+
+                        if (data.error) {
+                            resultArea.innerHTML = `
+                                <div class="alert alert-danger" role="alert">
+                                  ${data.error}: ${data.message}
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        if (!data.timestamps || data.timestamps.length === 0) {
+                            resultArea.innerHTML = `
+                                <div class="alert alert-primary" role="alert">
+                                  未找到该文件的备份记录
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        let html = `<p>找到最近 ${data.total} 条备份记录：</p><ul>`;
+
+                        // 遍历时间戳数组，并将每个时间戳转换为指定格式
+                        data.timestamps.forEach(ts => {
+                            // 将时间戳字符串转换为 Date 对象
+                            const date = new Date(parseInt(ts)*1000);
+                        
+                            // 格式化日期为 xxxx年xx月xx日xx:xx:xx
+                            const year = date.getFullYear(); // 获取年份
+                            const month = String(date.getMonth() + 1).padStart(2, '0'); // 获取月份（注意：getMonth 返回的是 0-11）
+                            const day = String(date.getDate()).padStart(2, '0'); // 获取日期
+                            const hours = String(date.getHours()).padStart(2, '0'); // 获取小时
+                            const minutes = String(date.getMinutes()).padStart(2, '0'); // 获取分钟
+                            const seconds = String(date.getSeconds()).padStart(2, '0'); // 获取秒
+                        
+                            const formattedDate = `${year}年${month}月${day}日${hours}:${minutes}:${seconds}`;
+                        
+                            // 将格式化后的时间添加到 HTML 中
+                            html += `<li>${formattedDate}</li>`;
+                        });
+                        
+                        html += '</ul>';
+
+
+                        resultArea.innerHTML = html;
+                    } catch (e) {
+                        resultArea.innerHTML = `
+                            <div class="alert alert-danger" role="alert">
+                              解析服务器响应失败：${e.message}
+                            </div>
+                        `;
+                    }
+                } else { // 请求失败
+                    resultArea.innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                          请求失败：HTTP 错误 ${xhr.status}
+                        </div>
+                    `;
+                }
+            }
+        };
+    }
+</script>
+</body>
+</html>
