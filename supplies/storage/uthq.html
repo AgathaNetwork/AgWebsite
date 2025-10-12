@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/sortable_v2.css" crossorigin="anonymous">
+
+    <title>uthq基地 | Agatha纯净生存</title>
+</head>
+
+<body onload="PageLoad();">
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                储存设施
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top:2rem" id="SearchContainer">
+        <div class="row">
+            <div class="col">
+                  <a href="/supplies/" class="text-decoration-none">返回</a>
+                <h3 id="InfrastructureName">uthq基地</h3>
+            </div>
+        </div>
+        <div class="shadow-sm row" style="margin-top:1rem">
+            <div class="col-12 col-md" style="margin-bottom:1rem">
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action">
+                        <small>建造者</small>
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 class="mb-1" id="IMaintainer"></h4>
+                        </div>
+                    </a>
+                    <a class="list-group-item list-group-item-action">
+                        <small class="text-muted">上次扫描时间</small>
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1" id="IConfirmation"></h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-md" style="margin-bottom:1rem">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="IPosition"></li>
+                    <li class="list-group-item">
+                        <div class="alert alert-primary" id="IMessage" role="alert">备注：按需拿取，合理使用</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="shadow-sm row" style="margin-top:1rem">
+            <!-- 表格容器 -->
+            <div class="col-12" id="ItemSummary">
+                <!-- 搜索框和表格将在 JS 中动态插入 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        var langJson;
+        let sortColumn = null; // 当前排序列（'name' 或 'quantity'）
+        let sortDirection = 'asc'; // 排序方向（'asc' 或 'desc'）
+        let dataArray = null;
+
+        /**
+         * 获取翻译键值
+         * @param {string} id - 物品ID，格式如 "minecraft:stone"
+         * @returns {string} - 翻译后的名称
+         */
+        function getTranslation(id) {
+            const parts = id.split(':', 2);
+            if (parts.length !== 2) return id;
+
+            const [namespace, name] = parts;
+            const prefixes = ['block', 'item', 'entity', 'fluid'];
+
+            for (const prefix of prefixes) {
+                const key = `${prefix}.${namespace}.${name}`;
+                if (langJson.hasOwnProperty(key)) {
+                    return langJson[key];
+                }
+            }
+            return id;
+        }
+
+        /**
+         * 构建表格 HTML
+         * @param {Array} data - 数据数组，包含 key 和 value
+         * @param {string} sortColumn - 当前排序列
+         * @param {string} sortDirection - 排序方向
+         * @returns {string} - 表格 HTML
+         */
+        function buildTable(data, sortColumn, sortDirection) {
+            let tableHtml = `
+            <table class="table table-striped table-bordered table-hover" style="margin-right:1rem">
+              <thead>
+                <tr>
+                  <th class="sortable" data-column="name">物品<span class="sort-icon"></span></th>
+                  <th class="text-end sortable" data-column="quantity">数量<span class="sort-icon"></span></th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+            data.forEach(item => {
+                tableHtml += `
+              <tr>
+                <td>${item.key}</td>
+                <td class="text-end">${item.value}</td>
+              </tr>
+            `;
+            });
+
+            tableHtml += `
+                </tbody>
+              </table>
+          `;
+
+            return tableHtml;
+        }
+
+        /**
+         * 排序数据
+         * @param {Array} data - 数据数组
+         * @param {string} column - 排序列名
+         * @param {string} direction - 排序方向
+         * @returns {Array} - 排序后的数据
+         */
+        function sortData(data, column, direction) {
+            return data.slice().sort((a, b) => {
+                if (column === 'name') {
+                    const result = a.key.localeCompare(b.key, 'zh-CN');
+                    return direction === 'asc' ? result : -result;
+                } else if (column === 'quantity') {
+                    const result = a.value - b.value;
+                    return direction === 'asc' ? result : -result;
+                }
+                return 0;
+            });
+        }
+
+        /**
+         * 绑定排序事件
+         */
+        function setupSortEvent() {
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.addEventListener('click', () => {
+                    const column = th.getAttribute('data-column');
+
+                    if (sortColumn === column) {
+                        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortColumn = column;
+                        sortDirection = 'asc';
+                    }
+
+                    const sortedData = sortData(dataArray, column, sortDirection);
+                    const tableHtml = buildTable(sortedData, sortColumn, sortDirection);
+                    document.getElementById('tableContainer').innerHTML = tableHtml;
+
+                    updateSortIcon(column, sortDirection);
+                    setupSortEvent();
+                });
+            });
+        }
+
+        /**
+         * 更新排序图标
+         * @param {string} column - 当前排序列
+         * @param {string} direction - 排序方向
+         */
+        function updateSortIcon(column, direction) {
+            document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
+                icon.classList.remove('asc', 'desc');
+            });
+
+            const currentIcon = document.querySelector(`th[data-column="${column}"] .sort-icon`);
+            if (currentIcon) {
+                currentIcon.classList.add(direction);
+            }
+        }
+
+        /**
+         * 搜索处理函数
+         */
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredData = dataArray.filter(item => {
+                return item.key.toLowerCase().includes(query);
+            });
+
+            const sortedData = sortData(filteredData, sortColumn, sortDirection);
+            const tableHtml = buildTable(sortedData, sortColumn, sortDirection);
+            document.getElementById('tableContainer').innerHTML = tableHtml;
+
+            setupSortEvent();
+        }
+
+        /**
+         * 页面加载函数
+         */
+        async function PageLoad() {
+            document.getElementById("IMaintainer").innerHTML =
+                "<a href=\"https://mc.agatha.org.cn/players/?q=YangShizi1\">YangShizi1</a>";
+
+            const langJsonResp = await fetch('lang.json');
+            langJson = await langJsonResp.json();
+
+            const url = 'https://api-openid.agatha.org.cn/supply/getStorage?id=uthq';
+            const itemSummaryElement = document.getElementById('ItemSummary');
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP错误！状态码: ${response.status}`);
+                const data = await response.text();
+
+                const parsed = JSON.parse(data);
+
+                const timestamp = parseInt(parsed.time, 10);
+                const beijingTimeMs = timestamp * 1000;
+                const beijingDate = new Date(beijingTimeMs);
+                const year = beijingDate.getFullYear();
+                const month = ('0' + (beijingDate.getMonth() + 1)).slice(-2);
+                const day = ('0' + beijingDate.getDate()).slice(-2);
+                const formattedDate = `${year}年${month}月${day}日`;
+                document.getElementById('IConfirmation').innerHTML = formattedDate;
+
+                const dataObj = JSON.parse(parsed.data);
+                dataArray = Object.keys(dataObj).map(key => ({
+                    key: getTranslation(key),
+                    value: dataObj[key]
+                }));
+
+                const sortedData = sortData(dataArray, sortColumn, sortDirection);
+
+                itemSummaryElement.innerHTML = `
+                    <input type="text" id="searchInput" placeholder="输入名称进行搜索" class="form-control mb-3">
+                    <div class="col-12" id="tableContainer"></div>
+                `;
+
+                const tableHtml = buildTable(sortedData, sortColumn, sortDirection);
+                document.getElementById('tableContainer').innerHTML = tableHtml;
+
+                setupSortEvent();
+                document.getElementById('searchInput').addEventListener('input', handleSearch);
+            } catch (error) {
+                console.error('请求失败:', error);
+                itemSummaryElement.innerHTML = '<p>加载内容时发生错误。</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>

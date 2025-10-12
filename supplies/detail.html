@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>资源管理 | Agatha纯净生存</title>
+  </head>
+  <body onload="PageLoad();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+资源管理
+</a>
+</div>
+</nav>
+
+<div class="container" style="margin-top:2rem" id="SearchContainer">
+    <div class="row">
+      <div class="col">
+  <a href="/supplies/" class="text-decoration-none">返回</a>
+  <h3 id="InfrastructureName">资源详细信息</h3>
+  <p id="InfrastructureStatus"></p>
+
+    </div>
+    
+    </div>
+    
+    
+    
+    <div class="shadow-sm row" style="margin-top:1rem">
+        
+<div class="col-12 col-md" style="margin-bottom:1rem">
+<div class="list-group">
+  <a class="list-group-item list-group-item-action">
+    
+    <small>维护玩家</small>
+    <div class="d-flex w-100 justify-content-between">
+      <h4 class="mb-1" id="IMaintainer"></h4>
+    </div>
+  </a>
+  <a class="list-group-item list-group-item-action">
+    <small class="text-muted" id="IUnitDescription"></small>
+    <div class="d-flex w-100 justify-content-between">
+      <h4 class="mb-1" id="IUnitDescriptionDetail">账号信息</h4>
+    </div>
+    
+  </a>
+  <a class="list-group-item list-group-item-action">
+      
+    <small class="text-muted">上次更新时间</small>
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1" id="IConfirmation"></h5>
+    </div>
+  </a>
+</div></div>
+
+<div class="col-12 col-md" style="margin-bottom:1rem">
+            <ul class="list-group list-group-flush">
+  <li class="list-group-item" id="IPosition"></li>
+  <li class="list-group-item"><div class="alert alert-primary" id="IMessage" role="alert">
+</div></li>
+</ul>
+</div>
+    </div>
+    
+</div>
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/supplies_detail.js"></script>
+  </body>
+  
+</html>
+
+

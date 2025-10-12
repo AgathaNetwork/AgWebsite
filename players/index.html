@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/openid.css">
+    <title>玩家名片 | Agatha纯净生存</title>
+  </head>
+  <body onload="LoadData();">
+      <div style="position: fixed; right: 10%;    bottom: 10%;    width: 48px;    height: 48px;    z-index: 1000;    cursor: pointer;">
+<div class="float-right"><button type="button" style="background-color:#FFFFFF" class="btn btn-outline-primary" onclick="GoTop();">↑</button></div>
+</div>
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+玩家名片
+</a>
+</div>
+</nav>
+
+<div class="container" style="margin-top:2rem" id="SearchContainer">
+    <div class="row">
+      <div class="col">
+      <div class="input-group mb-3">
+  <input type="text" class="form-control" id="PlayerInput" placeholder="玩家名" aria-label="玩家名" aria-describedby="button-addon2">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="GoSearch();">搜索</button>
+  </div>
+  
+</div>
+    </div>
+    
+    </div>
+    <div class="row"><div class="col"><div class="alert alert-warning" style="display:none" id="NoInfoAlarm" role="alert">
+  没有查询到玩家信息，请检查输入的ID是否正确
+</div></div></div>
+    </div>
+<div class="container" style="margin-top:2rem;display:none" id="IndexContainer">
+    <div class="row">
+      <div class="col">
+          <div class="media" style="margin-top:1rem;margin-bottom:1rem;margin-left:1rem">
+  <img src=""  width="40" height="40" class="mr-3 shadow-sm" id="UserHeadPic">
+  <div class="media-body">
+      <h2 id="PlayerName"></h2>
+  </div>
+</div>
+    </div>
+    </div>
+    
+    <div class="shadow-sm row">
+        <div class="col-12 col-md">
+            <ul class="list-group list-group-flush">
+  <li class="list-group-item" id="I_Online"></li>
+  <li class="list-group-item" id="I_LastLogin"></li>
+  <li class="list-group-item" id="I_LastLocation"></li>
+  <li class="list-group-item" id="I_RegTime"></li>
+  <li class="list-group-item" id="I_GalleryCount"></li>
+</ul>
+</div>
+    </div>
+    
+    <div class="shadow-sm row" style="display:none;margin-top:1rem" id="PasteDiv">
+        <div class="col-12 col-md">
+            <p id="PastesShow" class="text-center" style="margin-top:1rem;margin-bottom:1rem"></p>
+            <footer class="blockquote-footer text-right " style="margin-bottom:1rem" id="PasteTime"></footer>
+</div>
+    </div>
+    <div class="shadow-sm row" style="display:none;margin-top:1rem" id="AdvDiv">
+        <div class="col-12 col-md">
+            <div class="progress" style="margin-top:1rem">
+  <div class="progress-bar" role="progressbar" style="width:0%;" aria-valuemin="0" aria-valuemax="100" id="AdvProgress"></div>
+</div>
+            <div class="row">
+                <div class="col-6">
+                    <h4 style="margin-top:1rem;margin-left:1rem">Minecraft</h4>
+                    <ol class="list-group list-group-numbered " style="margin-bottom:1rem" id="AdvDetail1">
+    
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyroot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+	Minecraft</h5></div>游戏的核心与故事</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storymine_stone">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+石器时代</h5></div>用你的新镐挖掘石头</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyupgrade_tools">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+获得升级</h5></div>制作一把更好的镐</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storysmelt_iron">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+来硬的</h5></div>冶炼出一块铁锭</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyiron_tools">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+这不是铁镐么</h5></div>升级你的镐</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storylava_bucket">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+热腾腾的</h5></div>用铁桶装点熔岩</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyobtain_armor">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+整装上阵</h5></div>用铁盔甲来保护你自己</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storymine_diamond">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+钻石！</h5></div>获得钻石</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyform_obsidian">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+冰桶挑战</h5></div>获得一块黑曜石</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storydeflect_arrow">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+不吃这套，谢谢</h5></div>用盾牌反弹一个弹射物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyenchant_item">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+附魔师</h5></div>用附魔台附魔一样物品</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyshiny_gear">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+钻石护体</h5></div>钻石盔甲能救人</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyenter_the_nether">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+勇往直下</h5></div>建造、激活并进入一座下界传送门</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storycure_zombie_villager">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+僵尸科医生</h5></div>弱化并治疗一名僵尸村民</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyfollow_ender_eye">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+隔墙有眼</h5></div>跟随末影之眼</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="storyenter_the_end">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+结束了？</h5></div>进入末地传送门</div>
+</li></ol>
+<h4 style="margin-top:1rem;margin-left:1rem">下界</h4>
+                    <ol class="list-group list-group-numbered " style="margin-bottom:1rem" id="AdvDetail2">
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherroot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+下界</h5></div>记得带夏装</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherdistract_piglin">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+金光闪闪</h5></div>用金质物品让猪灵分神</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherfast_travel">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+曲速泡</h5></div>利用下界移动对应主世界7千米的距离</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherfind_bastion">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+光辉岁月</h5></div>进入堡垒遗迹</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherfind_fortress">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+阴森的要塞</h5></div>用你的方式进入下界要塞</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherobtain_ancient_debris">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+深藏不露</h5></div>获得远古残骸</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherobtain_crying_obsidian">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+谁在切洋葱？</h5></div>获得哭泣的黑曜石</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherreturn_to_sender">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+见鬼去吧</h5></div>用一团火球干掉一只恶魂</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherride_strider">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+画船添足</h5></div>手持诡异菌钓竿骑乘炽足兽</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherloot_bastion">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+战猪</h5></div>掠夺堡垒遗迹里的箱子</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherget_wither_skull">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+惊悚恐怖骷髅头</h5></div>获得凋灵骷髅的头颅</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherobtain_blaze_rod">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+与火共舞</h5></div>让烈焰人从烈焰棒中解放吧</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="nethernetherite_armor">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+残骸裹身</h5></div>获得一整套下界合金盔甲</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netheruse_lodestone">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+天涯共此石</h5></div>对着磁石使用指南针</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="nethercharge_respawn_anchor">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+锚没有九条命</h5></div>为重生锚充满能量</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netheruneasy_alliance">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+脆弱的同盟</h5></div>从下界救出一只恶魂，将其安全地带到主世界……然后干掉它</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherexplore_nether">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+热门景点</h5></div>探索所有下界生物群系</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherride_strider_in_overworld_lava">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+温暖如家</h5></div>带炽足兽在主世界的熔岩湖上来一场长——途旅行</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="nethersummon_wither">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+凋零山庄</h5></div>召唤凋灵</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherbrew_potion">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+本地酿造厂</h5></div>酿造一瓶药水</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="nethercreate_beacon">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+带信标回家</h5></div>建造并放置一个信标</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherall_potions">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+狂乱的鸡尾酒</h5></div>同时拥有所有药水效果</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="nethercreate_full_beacon">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+信标工程师</h5></div>让一座信标发挥最大功效</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="netherall_effects">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+为什么会变成这样呢？</h5></div>同时拥有所有状态效果</div>
+</li></ol>
+<h4 style="margin-top:1rem;margin-left:1rem">农牧业</h4>
+                    <ol class="list-group list-group-numbered " style="margin-bottom:1rem" id="AdvDetail5">
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryroot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+农牧业</h5></div>世界无处没有朋友与美食</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryallay_deliver_item_to_player">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+找到一个好朋友</h5></div>让悦灵向你投掷物品</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrybreed_an_animal">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+我从哪儿来？</h5></div>繁殖一对动物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryfishy_business">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+腥味十足的生意</h5></div>钓到一条鱼</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrymake_a_sign_glow">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+眼前一亮！</h5></div>让任意种类告示牌上的文本发光</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryobtain_sniffer_egg">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+怪味蛋</h5></div>获得嗅探兽蛋</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryplant_seed">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+开荒垦地</h5></div>种下种子，见证它的成长</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryride_a_boat_with_a_goat">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+羊帆起航！</h5></div>与山羊同船共渡</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrysafely_harvest_honey">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+与蜂共舞</h5></div>利用营火在不惊动蜜蜂的情况下从蜂巢收集蜂蜜</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrysilk_touch_nest">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+举巢搬迁</h5></div>用精准采集移动住着3只蜜蜂的蜂巢或蜂箱</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrytadpole_in_a_bucket">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+蚪到桶里来</h5></div>用铁桶捕获一只蝌蚪</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrytame_an_animal">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+永恒的伙伴</h5></div>驯服一只动物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryallay_deliver_cake_to_note_block">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+生日快乐歌</h5></div>让悦灵向音符盒投掷一块蛋糕</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrybred_all_animals">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+成双成对</h5></div>繁殖每种动物！</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrytactical_fishing">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+战术性钓鱼</h5></div>不用钓鱼竿抓住一条鱼！</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryfeed_snifflet">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+小小嗅探兽</h5></div>喂食一只幼年嗅探兽</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrybalanced_diet">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+均衡饮食</h5></div>尝遍天下食材，即便是对身体不好的</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryobtain_netherite_hoe">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+终极奉献</h5></div>用下界合金锭升级一把锄，然后重新考虑你的人生抉择</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrywax_on">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+涂蜡</h5></div>将蜜脾涂到铜质方块上！</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryleash_all_frog_variants">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+呱呱队出动</h5></div>用拴绳拴住所有种类的青蛙</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryrepair_wolf_armor">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+完好如初</h5></div>用犰狳鳞甲修复损坏的狼铠</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryremove_wolf_armor">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+华丽一剪</h5></div>用剪刀移除狼身上的狼铠</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrycomplete_catalogue">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+百猫全书</h5></div>驯服所有种类的猫！</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrywhole_pack">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+群狼聚首</h5></div>驯服所有种类的狼</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryaxolotl_in_a_bucket">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+最萌捕食者</h5></div>用铁桶捕获一只美西螈</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryplant_any_sniffer_seed">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+播种往事</h5></div>种植任意嗅探兽种子</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrywax_off">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+脱蜡</h5></div>给铜质方块脱蜡！</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandryfroglights">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+相映生辉！</h5></div>在你的物品栏中集齐所有种类的蛙明灯</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="husbandrykill_axolotl_target">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+友谊的治愈力！</h5></div>与美西螈并肩作战并赢得胜利</div>
+</li>
+
+</ol>
+</div>
+                <div class="col-6">
+<h4 style="margin-top:1rem;margin-left:1rem">冒险</h4>
+                    <ol class="list-group list-group-numbered " style="margin-bottom:1rem" id="AdvDetail4">
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureroot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+冒险</h5></div>冒险、探索与战斗</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureavoid_vibration">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+潜行100级</h5></div>在幽匿感测体或监守者周围潜行以防被它们探测到</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurecrafters_crafting_crafters">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+合成器合成合成器</h5></div>靠近一个正在合成合成器的合成器</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurefall_from_world_height">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+上天入地</h5></div>从世界顶部（建筑高度限制处）自由落体，坠至世界底部并存活下来</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurehoney_block_slide">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+胶着状态</h5></div>跳入蜂蜜块以缓冲摔落</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurekill_a_mob">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+怪物猎人</h5></div>杀死任意敌对性怪物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurelightning_rod_with_villager_no_fire">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+电涌保护器</h5></div>在不引发火灾的前提下保护村民免受雷击</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureminecraft_trials_edition">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+Minecraft：试炼版</h5></div>踏入试炼密室</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureol_betsy">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+扣下悬刀</h5></div>用弩进行一次射击</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureread_power_of_chiseled_bookshelf">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+知识就是力量</h5></div>使用红石比较器获取雕纹书架的信号强度</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurebrush_armadillo">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+这不是鳞甲么？</h5></div>用刷子从犰狳身上获得犰狳鳞甲</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuresalvage_sherd">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+探古寻源</h5></div>刷扫可疑的方块来获得陶片</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuresleep_in_bed">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+甜蜜的梦</h5></div>在床上睡觉以改变你的重生点</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurespyglass_at_parrot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+那是鸟吗？</h5></div>透过望远镜观察鹦鹉</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretrade">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+成交！</h5></div>成功与一名村民进行交易</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretrim_with_any_armor_pattern">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+旧貌锻新颜</h5></div>在锻造台中合成带有纹饰的盔甲</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurevoluntary_exile">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+自我放逐</h5></div>杀死一名袭击队长。或许该考虑暂时远离村庄……</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurekill_all_mobs">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+资深怪物猎人</h5></div>杀死每一种敌对性怪物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurekill_mob_near_sculk_catalyst">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+它蔓延了</h5></div>在幽匿催发体附近杀死生物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureshoot_arrow">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+瞄准目标</h5></div>用弓箭射点什么</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurethrow_trident">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+抖包袱</h5></div>往什么东西扔出三叉戟。注：别把你唯一的武器也抖掉了。</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretotem_of_undying">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+超越生死</h5></div>利用不死图腾逃离死神</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureblowback">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+逆风翻盘</h5></div>反弹旋风人的风弹来击杀旋风人</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurelighten_up">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+铜光焕发</h5></div>用斧刮削铜灯来让它变得更亮</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureoveroverkill">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+天赐良击</h5></div>使用重锤一击造成50颗心的伤害</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureunder_lock_and_key">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+珍藏密敛</h5></div>用试炼钥匙解锁宝库</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurewho_needs_rockets">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+还要啥火箭啊？</h5></div>使用风弹将自己向上弹射8格</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurearbalistic">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+劲弩手</h5></div>用弩一发击杀五只不同的生物</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretwo_birds_one_arrow">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+一箭双雕</h5></div>用一支穿透箭射杀两只幻翼</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurewhos_the_pillager_now">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+现在谁才是掠夺者？</h5></div>让掠夺者也尝尝弩的滋味</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurecraft_decorated_pot_using_only_sherds">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+精修细补</h5></div>用4个陶片制作饰纹陶罐</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureadventuring_time">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+探索的时光</h5></div>发现所有的生物群系</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventureplay_jukebox_in_meadows">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+音乐之声</h5></div>用唱片机的音乐声为草甸增添生机</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurewalk_on_powder_snow_with_leather_boots">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+轻功雪上飘</h5></div>在细雪上行走……并且不陷进去</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurespyglass_at_ghast">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+那是气球吗？</h5></div>透过望远镜观察恶魂</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuresummon_iron_golem">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+招募援兵</h5></div>召唤一只铁傀儡来帮忙守卫村庄</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretrade_at_world_height">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+星际商人</h5></div>在建筑高度限制处与村民交易</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuretrim_with_all_exclusive_armor_patterns">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+匠心独具</h5></div>将下列锻造模板都至少使用一次：尖塔、猪鼻、肋骨、监守、幽静、恼鬼、潮汐、向导</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurehero_of_the_village">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+村庄英雄</h5></div>成功在袭击中保卫村庄</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurebullseye">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+正中靶心</h5></div>从至少30米外射中标靶的靶心</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventuresniper_duel">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+狙击手的对决</h5></div>从至少50米外射杀一只骷髅</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurevery_very_frightening">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+魔女审判</h5></div>雷击一名村民</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurespyglass_at_dragon">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+那是飞机吗？</h5></div>透过望远镜观察末影龙</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="adventurerevaulting">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+宝经磨炼</h5></div>用不祥试炼钥匙解锁不祥宝库</div>
+</li>
+</ol>
+
+                <h4 style="margin-top:1rem;margin-left:1rem">末地</h4>
+                    <ol class="list-group list-group-numbered " style="margin-bottom:1rem" id="AdvDetail3">
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endroot">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+末地</h5></div>抑或是起点？</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endkill_dragon">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+解放末地</h5></div>祝君好运</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="enddragon_breath">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+你需要来点薄荷糖</h5></div>用玻璃瓶收集一些龙息</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="enddragon_egg">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+下一世代</h5></div>获得龙蛋</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endenter_end_gateway">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+远程折跃</h5></div>逃离这座岛屿</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endrespawn_dragon">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+结束了…再一次…</h5></div>复活末影龙</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endfind_end_city">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+在游戏尽头的城市</h5></div>进去吧，又能发生什么呢？</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endelytra">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+天空即为极限</h5></div>找到鞘翅</div>
+</li>
+
+<li class="list-group-item d-flex justify-content-between align-items-start" id="endlevitate">
+<div class="ms-2 me-auto">
+<div class="fw-bold"><h5>
+这上面的风景不错</h5></div>利用潜影贝的攻击向上漂浮50个方块</div>
+</li>
+</ol>
+                    
+                </div>
+            </div>
+
+            
+</div>
+    </div>
+</div>
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    
+    <script src="/js/playerloaddata.js"></script>
+    <script src="/js/showhead.js"></script>
+  </body>
+  
+</html>

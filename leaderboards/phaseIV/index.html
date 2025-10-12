@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+<link href="../../css/spr_lb.css" rel="stylesheet" type="text/css">
+    <title>排行榜 | Agatha纯净生存</title>
+  </head>
+  <body onload="PageLoad();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+排行榜
+</a>
+</div>
+
+</nav>
+
+
+
+
+      <!-- 
+      <object style="border:0px" type="text/html" data="catalog.html" width=100%></object>!-->
+
+<div class="container" style="margin-top:1rem" id="IndexContainer">
+    <div class="shadow-sm row">
+      <div class="col">
+          <div class="media" style="margin-top:1rem;margin-bottom:1rem;margin-left:1rem">
+  <div class="media-body">
+      <h2 id="GreetingText">2021暑期等级排行榜</h2>
+      <p class="text-black-50">截至 2021/8/28 23:59</p>
+				<div id="dataShow" >
+  </div>
+</div>
+    </div>
+    </div>
+    </div>
+    <div class="shadow-sm row" style="margin-top:1rem">
+        <div class="col-12 col-md">
+            <div class="dropdown" style="margin-top:1rem;margin-bottom:1rem;margin-left:1rem">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+    所有榜单
+  </button>
+  <div class="dropdown-menu">
+      
+<a class="dropdown-item" href="/leaderboards/">实时等级排行榜（总表）</a>
+<a class="dropdown-item" href="/leaderboards/diff/">实时等级排行榜（增长）</a>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item" href="/leaderboards/phaseIV/">2021暑期等级排行榜</a>
+<a class="dropdown-item" href="/leaderboards/phaseVI/">2021秋季等级排行榜</a>
+<a class="dropdown-item" href="/leaderboards/phaseVII/">2022寒假等级排行榜</a>	
+<a class="dropdown-item" href="/leaderboards/2022spring/">2022春季等级排行榜</a>	
+<a class="dropdown-item" href="/leaderboards/2022summer/">2022暑期等级排行榜</a>	
+<a class="dropdown-item" href="/leaderboards/2022autumn/">2022秋季等级排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2023winter/">2023寒假等级排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2023spring/">2023春季等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2023summer/">2023暑期等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2023autumn/">2023秋季等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2024winter/">2024寒假等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2024spring/">2024春季等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2024summer/">2024暑假等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2024autumn/">2024秋季等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2025winter/">2025寒假等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2025spring/">2025春季等级增长排行榜</a>
+<a class="dropdown-item" href="/leaderboards/2025summer/">2025暑假等级增长排行榜</a>
+      
+  </div>
+</div>
+</div>
+</div>
+</div>
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/lb_each.js"></script>
+    <script>
+	var playerData,playerPrefixes,playerOnline;
+	function GetPlayerData(){
+		playerData = JSON.parse('{"data":[{"name":"MikeWu597","level":"19","exp":"1677"},{"name":"jiapenglong414","level":"10","exp":"2275"},{"name":"dffasfsfd","level":"11","exp":"615"},{"name":"sectOLT","level":"54","exp":"1080"},{"name":"yixiaoliaozi","level":"1","exp":"700"},{"name":"ery","level":"5","exp":"2960"},{"name":"ARKNIGHTS2077","level":"0","exp":"750"},{"name":"TheBest_Villager","level":"6","exp":"2510"},{"name":"G4T","level":"0","exp":"0"},{"name":"wwwyyy","level":"3","exp":"995"},{"name":"_youtong_","level":"2","exp":"735"},{"name":"_meng_yi","level":"1","exp":"1840"},{"name":"yu_die_ling_xi","level":"0","exp":"0"},{"name":"Slepts","level":"0","exp":"0"},{"name":"Dreamup_xch","level":"10","exp":"1225"},{"name":"laiqiwo","level":"0","exp":"0"},{"name":"wsxcde","level":"11","exp":"750"},{"name":"LIUSHEN","level":"0","exp":"50"},{"name":"Richard_314159","level":"0","exp":"0"},{"name":"Richard_31415","level":"3","exp":"815"},{"name":"bbbddd","level":"0","exp":"815"},{"name":"wifi_left","level":"0","exp":"0"},{"name":"Starry___Sky","level":"3","exp":"1645"},{"name":"long_qi","level":"5","exp":"235"},{"name":"Lee330000","level":"0","exp":"0"},{"name":"Gold_firm","level":"0","exp":"75"},{"name":"5555hai","level":"0","exp":"270"},{"name":"jjjjflas","level":"0","exp":"145"},{"name":"Windydoge","level":"3","exp":"2000"},{"name":"Old_Peter","level":"0","exp":"0"},{"name":"__ShenLong__","level":"0","exp":"0"},{"name":"ALMOND","level":"0","exp":"0"},{"name":"bilibili_kgcl","level":"0","exp":"0"},{"name":"baiwan_player","level":"0","exp":"0"},{"name":"loveissave","level":"0","exp":"0"},{"name":"CatChame","level":"0","exp":"0"},{"name":"NightRaven909","level":"0","exp":"0"},{"name":"Hilvija","level":"0","exp":"0"},{"name":"LYSnowyWolf","level":"0","exp":"0"},{"name":"ZhenDui","level":"0","exp":"860"},{"name":"SaoDream_","level":"0","exp":"0"},{"name":"Arqq_","level":"0","exp":"0"},{"name":"WenTian","level":"0","exp":"55"},{"name":"testaccount2","level":"0","exp":"0"},{"name":"testaccount3","level":"0","exp":"0"}],"reqid":"R-16297349711632695076"}');
+		console.log("playerData: " + JSON.stringify(playerData));	
+	}
+	function GetPlayerPrefixes(){
+		playerPrefixes = JSON.parse('{"data":[{"name":"MikeWu597","prefix":"&6[腐竹]&f"},{"name":"Unk","prefix":"&6[金色传说！]&8"},{"name":"Unk","prefix":"&6[金色传说！]&8"},{"name":"Unk","prefix":"&6[金色传说！]&8"},{"name":"Unk","prefix":"§4[熬夜党的胜利]§f"},{"name":"xiaohonghat","prefix":"&9[用爱发电]&f"},{"name":"WenTian","prefix":"&7[寻道者]&f"},{"name":"Unk","prefix":"&d&l[奋斗者]&f"},{"name":"Starry___Sky","prefix":"&d[小阔耐]&f"},{"name":"Richard_31415","prefix":"&5[肝帝]&f"},{"name":"Windydoge","prefix":"&5[肝帝]&f"},{"name":"_meng_yi","prefix":"&d&l[奋斗者]&f"},{"name":"wwwyyy","prefix":"&6[玩家管理]&f"},{"name":"Unk","prefix":"&2[一期]&f"},{"name":"__ShenLong__","prefix":"&d&l[奋斗者]&f"},{"name":"TheBest_Villager","prefix":"&b[村长]&f"},{"name":"Old_Peter","prefix":"&5&k[&5[&l泽文&5]&k]&f"},{"name":"yu_die_ling_xi","prefix":"&d&l[奋斗者]&f"},{"name":"Unk","prefix":"&d&l[奋斗者]&f"},{"name":"_youtong_","prefix":"&9[用爱发电]&f"},{"name":"Unk","prefix":"&9[用爱发电]&f"},{"name":"yixiaoliaozi","prefix":"&d&l[奋斗者]&f"},{"name":"Unk","prefix":"&d&l[奋斗者]&f"},{"name":"Unk","prefix":"&d&l[奋斗者]&f"},{"name":"jiapenglong414","prefix":"&d&l[奋斗者]&f"},{"name":"Unk","prefix":"&d&l[奋斗者]&f"},{"name":"Dreamup_xch","prefix":"&5[肝帝]&f"},{"name":"long_qi","prefix":"&5[肝帝]&f"},{"name":"sectOLT","prefix":"&5[肝帝]&f"},{"name":"wsxcde","prefix":"&c&l[四期]&f"},{"name":"Slepts","prefix":""},{"name":"ery","prefix":"&c&l[四期]&f"},{"name":"dffasfsfd","prefix":"&c&l[四期]&f"},{"name":"ARKNIGHTS2077","prefix":""},{"name":"Richard_314159","prefix":""},{"name":"douxiaobi","prefix":""},{"name":"Long_Juan","prefix":""},{"name":"LYSnowyWolf","prefix":""},{"name":"G4T","prefix":""},{"name":"laiqiwo","prefix":""},{"name":"LIUSHEN","prefix":""},{"name":"bbbddd","prefix":""},{"name":"testaccount","prefix":"&1[测试]&f"},{"name":"Lee330000","prefix":""},{"name":"Gold_firm","prefix":""},{"name":"5555hai","prefix":""},{"name":"jjjjflas","prefix":""},{"name":"ALMOND","prefix":""},{"name":"bilibili_kgcl","prefix":""},{"name":"baiwan_player","prefix":""},{"name":"loveissave","prefix":""},{"name":"CatChame","prefix":""},{"name":"NightRaven909","prefix":""},{"name":"Hilvija","prefix":""},{"name":"ZhenDui","prefix":"&c&l[四期]&f"},{"name":"SaoDream_","prefix":""},{"name":"Arqq_","prefix":""},{"name":"testaccount2","prefix":""},{"name":"testaccount3","prefix":""}],"reqid":"R-1629734971355092280"}');
+		console.log("playerPrefixes: " + JSON.stringify(playerPrefixes));
+	}
+</script>
+  </body>
+</html>
+
+
