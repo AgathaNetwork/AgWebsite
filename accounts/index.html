@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/openid.css">
+    <title>OpenID | Agatha纯净生存</title>
+  </head>
+  <body onload="Bind();Verify();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+OpenID
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>登录验证中</h2></div>
+    </div>
+</div>
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    <div class="row">
+      <div class="col">
+          <div class="media" style="margin-top:1rem;margin-bottom:1rem;margin-left:1rem;">
+  <img src=""  width="40" height="40" class="mr-3 shadow-sm" id="UserHeadPic">
+  <div class="media-body">
+      <h2 id="GreetingText">您好！</h2>
+  </div>
+</div>
+    </div>
+    </div>
+    
+    <div class="shadow-sm row">
+        <div class="col-12 col-md">
+            <ul class="list-group list-group-flush">
+  <li class="list-group-item" id="I_Online"></li>
+  <li class="list-group-item" id="I_LastLogin"></li>
+  <li class="list-group-item" id="I_LastLocation"></li>
+  <li class="list-group-item" id="I_RegTime"></li>
+  <p id="UUIDContainer" style="margin-top:10px"></p>
+</ul>
+</div>
+<div class="col-12 col-md" style="margin-bottom:1rem">
+<div class="list-group">
+
+  <a href="settings.html" class="list-group-item list-group-item-action" style="background-color:color(display-p3 1.03 1.03 1.03);">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">基本设置</h5>
+      <small>></small>
+    </div>
+    <small class="text-muted">签名、进度显示、钉钉绑定</small>
+  </a>
+  <a href="info.html" class="list-group-item list-group-item-action" style="background-color:color(display-p3 1.03 1.03 1.03);">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">账号信息</h5>
+      <small class="text-muted">></small>
+    </div>
+    <small class="text-muted">实名认证、手机认证、服务信息管理</small>
+  </a>
+  <a href="functions.html" class="list-group-item list-group-item-action" style="background-color:color(display-p3 1.03 1.03 1.03);">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">游戏功能</h5>
+      <small class="text-muted">></small>
+    </div>
+    <small class="text-muted">游戏内相关功能</small>
+  </a>
+  <a href="security.html" class="list-group-item list-group-item-action" style="background-color:color(display-p3 1.03 1.03 1.03);">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">安全管理</h5>
+      <small class="text-muted">></small>
+    </div>
+    <small class="text-muted">登录记录、密码修改</small>
+  </a>
+</div></div>
+    </div>
+</div>
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/login.js"></script>
+    <script src="/js/dingbind.js"></script>
+    <script src="/js/verify.js"></script>
+    <script src="/js/showhead.js"></script>
+    <script src="/js/showdata.js"></script>
+  </body>
+</html>

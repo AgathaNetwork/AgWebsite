@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>OpenID | Agatha纯净生存</title>
+  </head>
+  <body onload="Verify();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/accounts/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+OpenID
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>正在加载</h2></div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    <div class="shadow-sm row">
+        <div class="col-12 col-md" style="margin-bottom:1rem">
+            
+        <a href="/accounts/" class="text-decoration-none">返回</a>
+            <div class="list-group"  style="margin-top:1rem">
+            <a class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">签名设置</h5>
+            </div>
+                <small>签名显示于您的玩家名片下方，可全自定义。请注意遵守中国法律法规，发现违规内容将封禁账号并上报有关部门。</small><br>
+                    <div class="row" style="margin-top:1rem">
+                        <div class="col-12 col-md">
+                            <div class="list-group">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item" id="S_Current"></li>
+                                        <li class="list-group-item" id="S_SetTime"></li>
+                                    </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md">
+                            <div class="form-group" style="margin-left:1rem">
+                                <input class="form-control" id="pasteInput" aria-describedby="idHelp">
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary" id="updateButton" onclick="UpdatePaste();" style="margin-left:1rem">更新签名</button><small style="margin-left:1rem">留空自动删除签名</small>
+                            <div class="alert alert-danger alert-dismissible fade" role="alert" id="Alert_UpdateFailed" style="margin-top:1rem;display:none">
+                                <strong>错误：</strong>操作失败
+                            </div>
+                            <div class="alert alert-success alert-dismissible fade" role="alert" id="Alert_UpdateSuccess" style="margin-top:1rem;display:none">
+                                <strong>成功：</strong>操作成功，请刷新页面查看最新内容
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+
+            
+            <a class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">进度显示设置</h5>
+            </div>
+            <small class="text-muted">您可自定义是否在玩家名片上显示进度信息。</small>
+            <p id="resultBoxAdv" style="margin-top:1rem" ></p> <button type="button" class="btn btn-outline-primary" onclick="ChangeAdv();">修改</button>
+            
+            </a>
+                
+                
+                <a class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">钉钉绑定设置</h5>
+            </div>
+            <small class="text-muted">2024年4月15日起新注册用户自动绑定钉钉，此项无需操作。如您没有此项数据，请在钉钉（茶馆）中发送 <code>@Agatha Bot 绑定</code> （需@到），然后按提示操作。</small>
+            <div class="list-group" style="margin-top:1rem">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item" id="D_Bind"></li>
+                                    </ul>
+                            </div>
+                </a></div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/verify_settingspage.js"></script>
+    <script src="/js/showpaste.js"></script>
+    <script src="/js/pasteutils.js"></script>
+    <script src="/js/dingutils.js"></script>
+    <script src="/js/advutils.js"></script>
+  </body>
+</html>

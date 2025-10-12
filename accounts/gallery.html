@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>AgGallery上传 | Agatha纯净生存</title>
+    <style>
+    .drop-zone {
+      border: 3px dashed #0d6efd;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+    .drop-zone:hover {
+      border-color: #0b5ed7;
+      background-color: #e7f5ff;
+    }
+    .drop-zone.dragover {
+      border-color: #0d6efd;
+      background-color: #dfeffe;
+      transform: scale(1.02);
+    }
+    .drop-zone-text {
+      font-size: 1.2rem;
+      color: #495057;
+    }
+    .form-section {
+      display: none; /* 初始隐藏 */
+    }
+    .upload-btn {
+      margin-top: 2rem;
+    }
+  </style>
+  </head>
+  <body onload="Verify();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/accounts/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+AgGallery上传
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>正在加载</h2></div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    <div class="shadow-sm row">
+        <div class="col-12 col-md" style="margin-bottom:1rem">
+            
+        <a href="/accounts/" class="text-decoration-none">返回</a>
+                    <!-- 文件上传区域 -->
+        <div class="drop-zone mt-2" id="dropZone">
+          <p class="drop-zone-text">
+            将 PNG 文件拖到这里<br>
+            或点击选择文件
+          </p>
+          <input type="file" id="fileInput" accept=".png" style="display: none;" />
+        </div>
+
+        <!-- 表单内容（选择文件后显示） -->
+        <div id="uploadForm" class="form-section">
+        
+         <!-- 世界选择（Bootstrap Inline Radio） -->
+        <div class="mb-3">
+          <label class="form-label">请选择世界：</label>
+        
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="world" id="world1" value="1" checked>
+            <label class="form-check-label" for="world1">主世界</label>
+          </div>
+        
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="world" id="world2" value="2">
+            <label class="form-check-label" for="world2">下界</label>
+          </div>
+        
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="world" id="world3" value="3">
+            <label class="form-check-label" for="world3">末地</label>
+          </div>
+        </div>
+          <!-- 类别选择 -->
+          <div class="mb-3">
+            <label for="categorySelect" class="form-label">选择类别：</label>
+            <select class="form-select" id="categorySelect">
+              <option value="1" selected>生存</option>
+              <option value="2">建筑</option>
+              <option value="3">生电</option>
+              <option value="4">赤石</option>
+              <option value="5">合照</option>
+              <option value="7">活动</option>
+              <option value="8">其他</option>
+            </select>
+          </div>
+
+          <!-- 图片名 -->
+          <div class="mb-3">
+            <label for="imageName" class="form-label">图片名</label>
+            <input type="text" class="form-control" id="imageName" placeholder="请输入图片名称">
+          </div>
+
+          <!-- 图片描述 -->
+          <div class="mb-3">
+            <label for="imageDesc" class="form-label">图片描述</label>
+            <textarea class="form-control" id="imageDesc" rows="3" placeholder="请输入图片描述"></textarea>
+          </div>
+
+          <!-- 光影名 -->
+          <div class="mb-3">
+            <label for="shaderName" class="form-label">光影名（可选）</label>
+            <input type="text" class="form-control" id="shaderName" placeholder="如：Sildur's Vibrant Shaders">
+          </div>
+
+          <!-- 光影配置 -->
+          <div class="mb-3">
+            <label for="shaderPreset" class="form-label">光影配置（可选）</label>
+            <input type="text" class="form-control" id="shaderPreset" placeholder="如：High Settings">
+          </div>
+
+          <!-- 密码 -->
+          <div class="mb-3">
+            <label for="password" class="form-label">上传密码</label>
+            <input type="password" class="form-control" id="password" placeholder="请输入上传密码" required>
+          </div>
+
+          <!-- 上传按钮 -->
+          <button type="button" class="btn btn-primary upload-btn" onclick="submitUpload()">上传图片</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/verify_gallery.js"></script>
+    
+  <script>
+  var UName = "";
+  var FileSelected;
+    // 获取元素
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadForm = document.getElementById('uploadForm');
+
+    // 点击上传区触发文件选择
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // 拖拽事件
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      handleFiles(files);
+    });
+
+    // 监听文件选择变化
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    // 处理文件
+    function handleFiles(files) {
+      if (files.length === 0) return;
+
+      const file = files[0];
+      if (file.type === 'image/png' || file.name.endsWith('.png')) {
+        // 显示表单
+        uploadForm.style.display = 'block';
+        dropZone.innerHTML = `<strong>已选文件：</strong>${file.name}`;
+        document.getElementById("password").placeholder = "请输入" + UName + "的密码";
+        FileSelected = file;
+      } else {
+        alert('请只上传 PNG 格式的图片！');
+        fileInput.value = ''; // 清空输入
+      }
+    }
+
+async function submitUpload() {
+  // 获取表单数据
+  const world = document.querySelector('input[name="world"]:checked')?.value;
+  const category = document.getElementById('categorySelect').value;
+  const imageName = document.getElementById('imageName').value.trim();
+  const imageDesc = document.getElementById('imageDesc').value.trim();
+  const shaderName = document.getElementById('shaderName').value.trim();
+  const shaderPreset = document.getElementById('shaderPreset').value.trim();
+  const password = document.getElementById('password').value;
+
+  const file = FileSelected;
+  if (!file) {
+    alert("未选择文件！");
+    return;
+  }
+
+  // 验证字段
+  if (!world) {
+    alert("请先选择一个世界！");
+    return;
+  }
+  if (!category) {
+    alert("请选择图片类别！");
+    return;
+  }
+  if (!imageName) {
+    alert("请输入图片名！");
+    return;
+  }
+  if (!imageDesc) {
+    alert("请输入图片描述！");
+    return;
+  }
+  if (!password) {
+    alert("请输入上传密码！");
+    return;
+  }
+
+  // 假设能获取用户名（例如从后端注入或 localStorage）
+  const username = UName;
+
+  // 解析图片元数据
+  let width = 0, height = 0, sizeKiB = Math.ceil(file.size / 1024);
+  const fileNameTrimmed = file.name.substring(file.name.lastIndexOf("/") + 1);
+
+  // 读取图片尺寸
+  const img = new Image();
+  const imgPromise = new Promise((resolve) => {
+    img.onload = () => {
+      width = img.width;
+      height = img.height;
+      resolve();
+    };
+    img.onerror = () => {
+      alert("无法读取图片，请上传有效的 PNG 文件。");
+      throw new Error("Image load failed");
+    };
+    img.src = URL.createObjectURL(file);
+  });
+
+  try {
+    await imgPromise; // 等待图片加载完成
+    URL.revokeObjectURL(img.src); // 释放内存
+
+    // Step 1: 发送 /gallery/create 创建上传任务
+    const metadata = {
+      name: fileNameTrimmed,
+      size: sizeKiB,
+      h: height,
+      w: width
+    };
+    
+    const shaderConfig = {
+        name: shaderName || "无",
+        config: shaderPreset || "无"
+    };
+    
+    const positionObj = {
+      x: 1000,
+      y: 1000,
+      z: 1000,
+      world: "none",
+      timestamp: Math.floor(Date.now() / 1000)
+    };
+    
+    const createParams = new URLSearchParams();
+    createParams.append('username', username);
+    createParams.append('password', password);
+    createParams.append('name', imageName);
+    createParams.append('annotation', imageDesc);
+    createParams.append('world', world);
+    createParams.append('type', category);
+    createParams.append('year', new Date().getFullYear());
+    createParams.append('players', '[]'); // 可扩展：添加玩家选择功能
+    createParams.append('shader', JSON.stringify(shaderConfig));
+    createParams.append('position', JSON.stringify(positionObj)); // 可为空
+    createParams.append('metadata', JSON.stringify(metadata));
+    createParams.append('timestamp', Math.floor(Date.now() / 1000).toString());
+
+    const createResponse = await fetch('https://api-gallery.agatha.org.cn/gallery/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: createParams
+    });
+
+    if (createResponse.status === 401) {
+      alert("密码错误");
+      document.getElementById('password').focus();
+      return;
+    }
+
+    if (!createResponse.ok) {
+      const errText = await createResponse.text();
+      alert(`创建上传任务失败：${createResponse.status} ${errText}`);
+      return;
+    }
+
+    const createData = await createResponse.json();
+
+    if (!createData.id) {
+      alert("响应中缺少上传ID：" + JSON.stringify(createData));
+      return;
+    }
+
+    const uploadId = createData.id;
+
+    // Step 2: 执行文件上传 /gallery/upload
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('id', uploadId);
+    formData.append('file', file, file.name); // 包含文件名
+
+    const uploadResponse = await fetch('https://api-gallery.agatha.org.cn/gallery/upload', {
+      method: 'POST',
+      body: formData
+      // 注意：使用 FormData 时，浏览器自动设置正确的 Content-Type 和 boundary
+    });
+
+    const uploadData = await uploadResponse.json();
+
+    if (uploadData.message && uploadData.message.includes("File uploaded successfully")) {
+      alert("图片上传成功！");
+      // 可选：跳转到画廊页或清空表单
+      location.href = "https://agatha.org.cn"; // 或其他页面
+    } else {
+      alert("文件上传失败：" + (uploadData.message || "未知错误"));
+    }
+
+  } catch (err) {
+    if (err.name === "SyntaxError") {
+      alert("响应解析失败（非JSON）：" + err.message);
+    } else {
+      alert("网络错误或图片读取失败：" + err.message);
+    }
+    console.error(err);
+  }
+}
+
+
+    // 假设 Verify() 是验证登录状态，完成后切换显示
+    // 在 verify_gallery.js 中应调用 showIndex() 来展示内容
+    window.showIndex = function() {
+      document.getElementById('AuthenticatingForm').style.display = 'none';
+      document.getElementById('IndexContainer').style.display = 'block';
+    }
+
+    // 如果 verify_gallery.js 中未自动调用，可模拟：
+    // setTimeout(showIndex, 1000); // 测试用
+  </script>
+  </body>
+</html>
