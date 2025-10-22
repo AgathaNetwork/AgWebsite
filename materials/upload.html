@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>材料列表上传 | Agatha纯净生存</title>
+    <style>
+    .drop-zone {
+      border: 3px dashed #0d6efd;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+    .drop-zone:hover {
+      border-color: #0b5ed7;
+      background-color: #e7f5ff;
+    }
+    .drop-zone.dragover {
+      border-color: #0d6efd;
+      background-color: #dfeffe;
+      transform: scale(1.02);
+    }
+    .drop-zone-text {
+      font-size: 1.2rem;
+      color: #495057;
+    }
+    .form-section {
+      display: none; /* 初始隐藏 */
+    }
+    .upload-btn {
+      margin-top: 2rem;
+    }
+  </style>
+  </head>
+  <body onload="Verify(); loadMaterials();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/accounts/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+材料列表上传
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>正在加载</h2></div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    
+    <a href="/materials/dash.html" class="text-decoration-none">返回</a><br>
+    <h2>材料列表上传</h2>
+    <div id="materials-list">
+        <div class="drop-zone mt-2" id="dropZone">
+            <p class="drop-zone-text">
+              将 CSV 文件拖到这里<br>
+              或点击选择文件
+            </p>
+            <input type="file" id="fileInput" accept=".csv" style="display: none;" />
+          </div>
+    </div>
+    
+    <!-- Form for title and description -->
+    <div id="formSection" class="form-section">
+        <div class="mb-3">
+            <label for="listTitle" class="form-label">标题</label>
+            <input type="text" class="form-control" id="listTitle" placeholder="输入材料列表标题">
+        </div>
+        <div class="mb-3">
+            <label for="listDescription" class="form-label">描述</label>
+            <textarea class="form-control" id="listDescription" rows="3" placeholder="输入材料列表描述"></textarea>
+        </div>
+        <div class="preview-section mb-3">
+            <h5>预览数据</h5>
+            <div id="previewData"></div>
+        </div>
+        <button id="uploadButton" class="btn btn-primary upload-btn" onclick="uploadMaterials()">上传材料列表</button>
+    </div>
+</div>
+
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/verify_materials.js"></script>
+    <script>
+        let parsedCSVData = [];
+        
+        function loadMaterials() {
+            document.getElementById("AuthenticatingForm").style.display = "none";
+            document.getElementById("IndexContainer").style.display = "block";
+            
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Click on drop zone to trigger file input
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', (event) => {
+                handleFileSelect(event.target.files[0]);
+            });
+            
+            // Drag and drop events
+            dropZone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (event.dataTransfer.files.length) {
+                    handleFileSelect(event.dataTransfer.files[0]);
+                }
+            });
+        }
+        
+        function handleFileSelect(file) {
+            if (!file || !file.name.endsWith('.csv')) {
+                alert('请选择一个CSV文件');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const csvData = e.target.result;
+                    parseCSV(csvData);
+                    showFormSection();
+                } catch (error) {
+                    console.error('Error parsing CSV:', error);
+                    alert('解析CSV文件时出错: ' + error.message);
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+        
+        function parseCSV(csvData) {
+            const lines = csvData.split('\n');
+            parsedCSVData = [];
+            
+            // Skip header row
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                // Simple CSV parsing (assuming no commas in values)
+                const values = line.split(',');
+                if (values.length >= 4) {
+                    // Extract item name (remove quotes if present)
+                    const itemName = values[0].replace(/"/g, '').trim();
+                    // Extract missing count (3rd column)
+                    const missingCount = parseInt(values[2]);
+                    
+                    if (itemName && !isNaN(missingCount) && missingCount > 0) {
+                        parsedCSVData.push({
+                            name: itemName,
+                            count: missingCount
+                        });
+                    }
+                }
+            }
+            
+            // Show preview
+            showPreview();
+        }
+        
+        function showPreview() {
+            const previewContainer = document.getElementById('previewData');
+            if (parsedCSVData.length === 0) {
+                previewContainer.innerHTML = '<p>没有可显示的数据</p>';
+                return;
+            }
+            
+            let html = '<table class="table table-striped"><thead><tr><th>材料名称</th><th>数量</th></tr></thead><tbody>';
+            parsedCSVData.forEach(item => {
+                html += `<tr><td>${item.name}</td><td>${item.count}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            
+            previewContainer.innerHTML = html;
+        }
+        
+        function showFormSection() {
+            document.getElementById('formSection').style.display = 'block';
+        }
+        
+        function uploadMaterials() {
+            const title = document.getElementById('listTitle').value.trim();
+            const description = document.getElementById('listDescription').value.trim();
+            
+            if (!title) {
+                alert('请输入标题');
+                return;
+            }
+            
+            if (!description) {
+                alert('请输入描述');
+                return;
+            }
+            
+            if (parsedCSVData.length === 0) {
+                alert('没有可上传的数据');
+                return;
+            }
+            
+            // Disable upload button during submission
+            const uploadButton = document.getElementById('uploadButton');
+            uploadButton.disabled = true;
+            uploadButton.textContent = '上传中...';
+            
+            // Get session
+            const session = Verify_getCookie("sess");
+            
+            // Prepare data for API
+            const requestData = {
+                session: session,
+                name: title,
+                description: description,
+                json: JSON.stringify(parsedCSVData)
+            };
+            
+            // Submit to API
+            fetch('https://api-materials.agatha.org.cn/api/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.message);
+                }
+                
+                // Success
+                alert('材料列表上传成功！');
+                // Redirect to dashboard
+                window.location.href = '/materials/dash.html';
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('上传失败: ' + error.message);
+                // Re-enable button
+                uploadButton.disabled = false;
+                uploadButton.textContent = '上传材料列表';
+            });
+        }
+    </script>
+
+  </body>
+</html>
