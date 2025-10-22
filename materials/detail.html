@@ -169,9 +169,17 @@
             
             if (items && items.length > 0) {
                 items.forEach((item, index) => {
-                    const statusText = item.done ? "已完成" : "未完成";
-                    const statusClass = item.done ? "text-success" : "text-warning";
-                    const occupiedBy = item.occupied ? `由 ${item.occupied}` : "";
+                    let statusText, statusClass;
+                    if (item.done) {
+                        statusText = "已完成";
+                        statusClass = "text-success";
+                    } else if (item.occupied) {
+                        statusText = `收集中：${item.occupied}`;
+                        statusClass = "text-primary";
+                    } else {
+                        statusText = "未完成";
+                        statusClass = "text-warning";
+                    }
                     
                     html += `
                         <tr>
@@ -179,7 +187,6 @@
                             <td>${item.count}</td>
                             <td>
                                 <span class="${statusClass}">${statusText}</span>
-                                ${occupiedBy ? `<br><small>${occupiedBy}</small>` : ''}
                             </td>
                         </tr>
                     `;
