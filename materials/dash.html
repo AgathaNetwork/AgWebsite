@@ -99,7 +99,7 @@
                         
                         html += `
                             <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card">
+                                <div class="card" style="cursor: pointer;" onclick="window.location.href='detail.html?id=${item.id}'">
                                     <div class="card-body">
                                         <h5 class="card-title">${item.name}</h5>
                                         <p class="card-text">${item.description}</p>
