@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>材料列表管理 | Agatha纯净生存</title>
+    <style>
+    .drop-zone {
+      border: 3px dashed #0d6efd;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+    .drop-zone:hover {
+      border-color: #0b5ed7;
+      background-color: #e7f5ff;
+    }
+    .drop-zone.dragover {
+      border-color: #0d6efd;
+      background-color: #dfeffe;
+      transform: scale(1.02);
+    }
+    .drop-zone-text {
+      font-size: 1.2rem;
+      color: #495057;
+    }
+    .form-section {
+      display: none; /* 初始隐藏 */
+    }
+    .upload-btn {
+      margin-top: 2rem;
+    }
+  </style>
+  </head>
+  <body onload="Verify(); loadMaterials();">
+      <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+<div class="container-fluid">
+<a class="navbar-brand" href="/accounts/">
+<img src="/img/Ag_0404.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+材料列表管理
+</a>
+</div>
+</nav>
+
+    <div class="container" style="margin-top:2rem" id="AuthenticatingForm">
+    <div class="row">
+      <div class="col-3 text-right">
+      <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+
+    </div>
+    <div class="col-9"><h2>正在加载</h2></div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top:1rem;display:none" id="IndexContainer">
+    <h2>材料列表</h2>
+    <div id="materials-list">
+        <!-- 材料列表将通过JavaScript动态加载 -->
+    </div>
+</div>
+
+
+    <script src="/js/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/verify_materials.js"></script>
+    <script>
+        function loadMaterials() {
+            var Session = Verify_getCookie("sess");
+            fetch('https://api-materials.agatha.org.cn/api/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'session=' + Session
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("AuthenticatingForm").style.display = "none";
+                document.getElementById("IndexContainer").style.display = "block";
+                
+                const container = document.getElementById("materials-list");
+                
+                if (data.items && data.items.length > 0) {
+                    let html = '<div class="row">';
+                    data.items.forEach(item => {
+                        const doneStatus = item.done ? '已完成' : '未完成';
+                        const doneClass = item.done ? 'text-success' : 'text-warning';
+                        const uploadTime = new Date(item.upload_time * 1000).toLocaleString();
+                        
+                        html += `
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${item.name}</h5>
+                                        <p class="card-text">${item.description}</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                状态: <span class="${doneClass}">${doneStatus}</span><br>
+                                                上传时间: ${uploadTime}
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p>暂无材料列表项。</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading materials:', error);
+                document.getElementById("AuthenticatingForm").innerHTML = 
+                    '<div class="alert alert-danger">加载失败，请稍后重试。</div>';
+            });
+        }
+    </script>
+
+  </body>
+</html>
