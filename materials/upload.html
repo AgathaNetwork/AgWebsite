@@ -37,6 +37,13 @@
     .upload-btn {
       margin-top: 2rem;
     }
+    .delete-btn {
+      cursor: pointer;
+      color: #dc3545;
+    }
+    .delete-btn:hover {
+      color: #bd2130;
+    }
   </style>
   </head>
   <body onload="Verify(); loadMaterials();">
@@ -73,7 +80,19 @@
               或点击选择文件
             </p>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" />
-          </div>
+        </div>
+        <!-- Encoding selection -->
+        <div class="mb-3" id="encodingSection" style="display: none;">
+            <label for="fileEncoding" class="form-label">选择文件编码:</label>
+            <select class="form-control" id="fileEncoding">
+                <option value="auto">自动检测</option>
+                <option value="UTF-8">UTF-8</option>
+                <option value="GBK">GBK</option>
+                <option value="GB2312">GB2312</option>
+                <option value="Big5">Big5</option>
+            </select>
+            <button class="btn btn-secondary mt-2" onclick="confirmEncoding()">确认编码并解析</button>
+        </div>
     </div>
     
     <!-- Form for title and description -->
@@ -100,6 +119,7 @@
     <script src="/js/verify_materials.js"></script>
     <script>
         let parsedCSVData = [];
+        let currentFile = null;
         
         function loadMaterials() {
             document.getElementById("AuthenticatingForm").style.display = "none";
@@ -143,6 +163,21 @@
                 return;
             }
             
+            currentFile = file;
+            // Show encoding selection
+            document.getElementById('encodingSection').style.display = 'block';
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('previewData').innerHTML = '';
+        }
+        
+        function confirmEncoding() {
+            if (!currentFile) {
+                alert('请先选择一个文件');
+                return;
+            }
+            
+            const encoding = document.getElementById('fileEncoding').value;
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -154,7 +189,38 @@
                     alert('解析CSV文件时出错: ' + error.message);
                 }
             };
-            reader.readAsText(file, 'UTF-8');
+            
+            // Use selected encoding or UTF-8 as default
+            if (encoding === 'auto') {
+                // Try common encodings
+                const tryEncoding = (encodings, index) => {
+                    if (index >= encodings.length) {
+                        alert('无法使用常见编码解析文件，请手动选择正确的编码格式');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const csvData = e.target.result;
+                            parseCSV(csvData);
+                            showFormSection();
+                        } catch (error) {
+                            // Try next encoding
+                            tryEncoding(encodings, index + 1);
+                        }
+                    };
+                    reader.onerror = function() {
+                        tryEncoding(encodings, index + 1);
+                    };
+                    reader.readAsText(currentFile, encodings[index]);
+                };
+                
+                // Try common encodings in order
+                tryEncoding(['UTF-8', 'GBK', 'GB2312', 'Big5'], 0);
+            } else {
+                reader.readAsText(currentFile, encoding);
+            }
         }
         
         function parseCSV(csvData) {
@@ -177,7 +243,8 @@
                     if (itemName && !isNaN(missingCount) && missingCount > 0) {
                         parsedCSVData.push({
                             name: itemName,
-                            count: missingCount
+                            count: missingCount,
+                            id: parsedCSVData.length // Add an ID for deletion
                         });
                     }
                 }
@@ -194,13 +261,21 @@
                 return;
             }
             
-            let html = '<table class="table table-striped"><thead><tr><th>材料名称</th><th>数量</th></tr></thead><tbody>';
-            parsedCSVData.forEach(item => {
-                html += `<tr><td>${item.name}</td><td>${item.count}</td></tr>`;
+            let html = '<table class="table table-striped"><thead><tr><th>材料名称</th><th>数量</th><th>操作</th></tr></thead><tbody>';
+            parsedCSVData.forEach((item, index) => {
+                html += `<tr id="item-row-${index}"><td>${item.name}</td><td>${item.count}</td><td><span class="delete-btn" onclick="deleteItem(${index})">删除</span></td></tr>`;
             });
             html += '</tbody></table>';
             
             previewContainer.innerHTML = html;
+        }
+        
+        function deleteItem(index) {
+            // Remove the item from parsedCSVData
+            parsedCSVData.splice(index, 1);
+            
+            // Update the display
+            showPreview();
         }
         
         function showFormSection() {
@@ -234,12 +309,20 @@
             // Get session
             const session = Verify_getCookie("sess");
             
+            // Prepare data for API (without the temporary IDs)
+            const uploadData = parsedCSVData.map(item => {
+                return {
+                    name: item.name,
+                    count: item.count
+                };
+            });
+            
             // Prepare data for API
             const requestData = {
                 session: session,
                 name: title,
                 description: description,
-                json: JSON.stringify(parsedCSVData)
+                json: JSON.stringify(uploadData)
             };
             
             // Submit to API
